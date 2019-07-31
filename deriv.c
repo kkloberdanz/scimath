@@ -8,7 +8,7 @@ double first_deriv(double (*f)(double), double x) {
 }
 
 double second_deriv(double (*f)(double), double x) {
-    return (f(x + H) - 2 * f(x) + f(x - H)) / pow(H, 2);
+    return (f(x + H) - 2 * f(x) + f(x - H)) / (H * H);
 }
 
 double my_func(double x) {

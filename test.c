@@ -22,6 +22,7 @@ int main() {
     double *arr1 = malloc(sizeof(double) * SIZE);
     double *arr2 = malloc(sizeof(double) * SIZE);
     size_t i;
+    int maximum;
 
     printf("f'(x) = %f\n", first_deriv(my_func, x));
     printf("f''(x) = %f\n", second_deriv(my_func, x));
@@ -30,10 +31,12 @@ int main() {
         arr1[i] = i;
     }
 
-    ksm_map(times_2, arr1, arr2, SIZE);
+    ksm_map(sqrt, arr1, arr2, SIZE);
     array = arr2;
 
-    printf("%d\n", int_MAX(1, 2));
+    maximum = int_MAX(1, 2);
+    printf("%d\n", maximum);
+    printf("%.2f\n", array[SIZE-1]);
 
     free(arr1);
     free(arr2);

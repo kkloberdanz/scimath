@@ -28,5 +28,6 @@ scimath.so:
 	$(CC) -shared -o scimath.so scimath.o
 
 clean:
-	rm -f scimath.o
-	rm -f scimath.so
+	rm -f *.o
+	rm -f *.so
+	rm -f test

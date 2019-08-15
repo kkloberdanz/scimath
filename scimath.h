@@ -10,7 +10,11 @@
 
 double first_deriv(double (*f)(double), double x);
 double second_deriv(double (*f)(double), double x);
-double my_func(double x);
 void ksm_map(double (*f)(double), double *src, double *dst, size_t size);
+
+#define GENERIC_MAX( TYPE )           \
+TYPE TYPE##_MAX( TYPE a, TYPE b ) {   \
+    return (a > b) ? a : b;           \
+}
 
 #endif /* SCIMATH_H */

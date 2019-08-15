@@ -5,8 +5,14 @@
 
 #define SIZE 100000000
 
+GENERIC_MAX(int)
+
 double times_2(double x) {
     return x * 2;
+}
+
+double my_func(double x) {
+    return pow(x, 3);
 }
 
 volatile double *array;
@@ -26,6 +32,8 @@ int main() {
 
     ksm_map(times_2, arr1, arr2, SIZE);
     array = arr2;
+
+    printf("%d\n", int_MAX(1, 2));
 
     free(arr1);
     free(arr2);

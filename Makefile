@@ -5,7 +5,7 @@ SANITIZE=-fsanitize=address -fno-omit-frame-pointer -fsanitize=undefined
 
 OBJS=scimath.so
 
-release: OPTIM_FLAGS=-O2
+release: OPTIM_FLAGS=-O2 -g
 release: test
 
 debug: OPTIM_FLAGS=-Og -ggdb -DDEBUG $(SANITIZE)

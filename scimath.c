@@ -14,10 +14,6 @@ double second_deriv(double (*f)(double), double x) {
            (DERIV_H_CONST * DERIV_H_CONST);
 }
 
-double my_func(double x) {
-    return pow(x, 3);
-}
-
 void ksm_map(double (*f)(double), double *src, double *dst, size_t size) {
     size_t i;
     #pragma omp parallel for

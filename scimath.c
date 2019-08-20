@@ -4,20 +4,31 @@
 
 #include "scimath.h"
 
-double first_deriv(double (*f)(double), double x) {
-    return (f(x + DERIV_H_CONST) - f(x - DERIV_H_CONST)) / \
+double ksm_first_deriv(double (*f)(double), double x) {
+    return (f(x + DERIV_H_CONST) - f(x - DERIV_H_CONST)) /
            (2 * DERIV_H_CONST);
 }
 
-double second_deriv(double (*f)(double), double x) {
-    return (f(x + DERIV_H_CONST) - 2 * f(x) + f(x - DERIV_H_CONST)) / \
+double ksm_second_deriv(double (*f)(double), double x) {
+    return (f(x + DERIV_H_CONST) - 2 * f(x) + f(x - DERIV_H_CONST)) /
            (DERIV_H_CONST * DERIV_H_CONST);
 }
 
-void ksm_map(double (*f)(double), double *src, double *dst, size_t size) {
+void ksm_map(double (*f)(double), double *dst, const double *src, size_t size) {
     size_t i;
     #pragma omp parallel for
     for (i = 0; i < size; i++) {
         dst[i] = f(src[i]);
+    }
+}
+
+/*
+ * TODO: optimize with SIMD and intrinsic sqrt
+ */
+void ksm_vector_f64_sqrt(double *dst, const double *src, size_t size) {
+    size_t i;
+    #pragma omp parallel for
+    for (i = 0; i < size; i++) {
+        dst[i] = sqrt(src[i]);
     }
 }

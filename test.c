@@ -3,15 +3,11 @@
 #include <sys/time.h>
 
 #include "scimath.h"
+#include "template.h"
 
 #define SIZE 100000000
 
-/*
- * declare generic macros
- */
 ksm_GENERIC_MAX(int)
-ksm_GENERIC_VECTOR(int)
-ksm_GENERIC_VECTOR(double)
 
 double times_2(double x) {
     return x * 2;

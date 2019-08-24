@@ -22,9 +22,12 @@ CC=$(COMPILER) $(OPTIM_FLAGS) $(CFLAGS) $(WARN_FLAGS)
 loc: clean
 	find . -path '*/.*' -prune -o -type f -exec sloccount {} \+
 
-test: libscimath.so
-	$(CC) -L . test.c -o test libscimath.so -lm -fopenmp
+test: libscimath.so template
+	$(CC) -L . test.c template.o -o test -lscimath -lm -fopenmp
 	./test
+
+template: template.h template.c
+	$(CC) -c template.c
 
 libscimath.so:
 	$(CC) -c -fpic scimath.c -fopenmp -o scimath.o

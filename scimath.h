@@ -18,8 +18,8 @@
 #endif
 
 /******************************************************************************
- * By default use libc malloc, realloc, and free, can be overridden with custom
- * implementation if desired
+ * By default use libc malloc, realloc, and free.
+ * These can be overridden with custom implementations if desired.
  *****************************************************************************/
 #ifndef ksm_MALLOC
 #define ksm_MALLOC malloc
@@ -34,7 +34,7 @@
 #endif
 
 /******************************************************************************
- * enums
+ * Enums
  *****************************************************************************/
 enum ksm_ErrorCode {
     ksm_NO_ERROR,
@@ -51,6 +51,10 @@ void ksm_vector_f64_sqrt(double *dst, const double *src, size_t size);
 
 /******************************************************************************
  * Generic Template Macros
+ * Usage:
+ * Call the *_HEADER macro in a .h file, and include this in any source that
+ * will utilize the given macro
+ * Then call the *_IMPL in a .c file to include the source implementation
  *****************************************************************************/
 #define ksm_GENERIC_MAX( TYPE )           \
 TYPE ksm_##TYPE##_MAX( TYPE a, TYPE b ) {   \
@@ -70,7 +74,7 @@ TYPE ksm_##TYPE##_MAX( TYPE a, TYPE b ) {   \
             (1000000 * _ksm_start.tv_sec + _ksm_start.tv_usec); \
     } while (0)
 
-#define ksm_GENERIC_VECTOR( TYPE ) \
+#define ksm_GENERIC_VECTOR_HEADER( TYPE ) \
     struct ksm_##TYPE##_Vector { \
         size_t size; \
         size_t capacity; \
@@ -85,7 +89,8 @@ TYPE ksm_##TYPE##_MAX( TYPE a, TYPE b ) {   \
 \
     enum ksm_ErrorCode ksm_##TYPE##_vector_free(\
         struct ksm_##TYPE##_Vector *v); \
-\
+
+#define ksm_GENERIC_VECTOR_IMPL( TYPE ) \
     enum ksm_ErrorCode ksm_##TYPE##_vector_init(\
         struct ksm_##TYPE##_Vector *v\
     ) { \

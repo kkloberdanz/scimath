@@ -1,3 +1,7 @@
+###############################################################################
+# Copyright 2019 Kyle Kloberdanz
+###############################################################################
+
 CFLAGS=-std=iso9899:1990
 WARN_FLAGS=-Wall -Wextra -Wpedantic -Werror
 CLANG=clang -Wassign-enum -Wenum-conversion

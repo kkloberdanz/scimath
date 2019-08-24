@@ -16,6 +16,22 @@ double my_func(double x) {
     return pow(x, 3);
 }
 
+void test_vector() {
+    int i;
+    struct ksm_Vector v;
+    ksm_vector_init(&v);
+
+    for (i = 0; i < 100; i++) {
+        ksm_vector_push(&v, i);
+    }
+
+    for (i = 0; i < 100; i++) {
+        printf("%d, ", v.data[i]);
+    }
+    puts("");
+    ksm_vector_free(&v);
+}
+
 int main() {
     double x = 5.0;
     double *arr1 = malloc(sizeof(double) * SIZE);
@@ -31,7 +47,6 @@ int main() {
         arr1[i] = i;
     }
 
-
     ksm_TIMEIT(ksm_map(sqrt, arr2, arr1, SIZE), &runtime);
     printf("ksm_map time: %ld us\n", runtime);
 
@@ -44,5 +59,7 @@ int main() {
 
     free(arr1);
     free(arr2);
+
+    test_vector();
     return 0;
 }

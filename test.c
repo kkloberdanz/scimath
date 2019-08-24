@@ -6,7 +6,12 @@
 
 #define SIZE 100000000
 
+/*
+ * declare generic macros
+ */
 ksm_GENERIC_MAX(int)
+ksm_GENERIC_VECTOR(int)
+ksm_GENERIC_VECTOR(double)
 
 double times_2(double x) {
     return x * 2;
@@ -18,18 +23,30 @@ double my_func(double x) {
 
 void test_vector() {
     int i;
-    struct ksm_Vector v;
-    ksm_vector_init(&v);
+    struct ksm_int_Vector v;
+    struct ksm_double_Vector v2;
+    ksm_int_vector_init(&v);
 
     for (i = 0; i < 100; i++) {
-        ksm_vector_push(&v, i);
+        ksm_int_vector_push(&v, i);
     }
 
     for (i = 0; i < 100; i++) {
         printf("%d, ", v.data[i]);
     }
     puts("");
-    ksm_vector_free(&v);
+    ksm_int_vector_free(&v);
+
+    ksm_double_vector_init(&v2);
+    for (i = 0; i < 100; i++) {
+        ksm_double_vector_push(&v2, sqrt(i));
+    }
+
+    for (i = 0; i < 100; i++) {
+        printf("%f, ", v2.data[i]);
+    }
+    puts("");
+    ksm_double_vector_free(&v2);
 }
 
 int main() {

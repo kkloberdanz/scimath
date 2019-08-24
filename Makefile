@@ -19,7 +19,7 @@ debug: test
 valgrind: OPTIM_FLAGS=-Og -ggdb -DDEBUG
 valgrind: test
 
-COMPILER=$(GCC)
+COMPILER=$(CLANG)
 
 CC=$(COMPILER) $(OPTIM_FLAGS) $(CFLAGS) $(WARN_FLAGS)
 

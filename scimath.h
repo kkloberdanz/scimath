@@ -60,81 +60,80 @@ void ksm_vector_f64_sqrt(double *dst, const double *src, size_t size);
  * will utilize the given macro
  * Then call the *_IMPL in a .c file to include the source implementation
  *****************************************************************************/
-#define ksm_GENERIC_MAX( TYPE )           \
-TYPE ksm_##TYPE##_MAX( TYPE a, TYPE b ) {   \
-    return (a > b) ? a : b;           \
+#define ksm_GENERIC_MAX( TYPE )                                               \
+TYPE ksm_##TYPE##_MAX( TYPE a, TYPE b ) {                                     \
+    return (a > b) ? a : b;                                                   \
 }
 
-#define ksm_TIMEIT(stmt, time_buffer) \
-    do { \
-        struct timeval _ksm_start, _ksm_finish; \
-        gettimeofday(&_ksm_start, NULL); \
-        { \
-            stmt; \
-        } \
-        gettimeofday(&_ksm_finish, NULL); \
-        *time_buffer = \
-            (1000000 * _ksm_finish.tv_sec + _ksm_finish.tv_usec) - \
-            (1000000 * _ksm_start.tv_sec + _ksm_start.tv_usec); \
+#define ksm_TIMEIT(stmt, time_buffer)                                         \
+    do {                                                                      \
+        struct timeval _ksm_start, _ksm_finish;                               \
+        gettimeofday(&_ksm_start, NULL);                                      \
+        {                                                                     \
+            stmt;                                                             \
+        }                                                                     \
+        gettimeofday(&_ksm_finish, NULL);                                     \
+        *time_buffer =                                                        \
+            (1000000 * _ksm_finish.tv_sec + _ksm_finish.tv_usec) -            \
+            (1000000 * _ksm_start.tv_sec + _ksm_start.tv_usec);               \
     } while (0)
 
-#define ksm_GENERIC_VECTOR_HEADER( TYPE ) \
-    struct ksm_##TYPE##_Vector { \
-        size_t size; \
-        size_t capacity; \
-        TYPE *data; \
-    }; \
-\
-    enum ksm_ErrorCode ksm_##TYPE##_vector_init(\
-        struct ksm_##TYPE##_Vector *v); \
-\
-    enum ksm_ErrorCode ksm_##TYPE##_vector_push(\
-        struct ksm_##TYPE##_Vector *v, TYPE value); \
-\
-    enum ksm_ErrorCode ksm_##TYPE##_vector_free(\
-        struct ksm_##TYPE##_Vector *v); \
+#define ksm_GENERIC_VECTOR_HEADER( TYPE )                                     \
+    struct ksm_##TYPE##_Vector {                                              \
+        size_t size;                                                          \
+        size_t capacity;                                                      \
+        TYPE *data;                                                           \
+    };                                                                        \
+                                                                              \
+    enum ksm_ErrorCode ksm_##TYPE##_vector_init(                              \
+        struct ksm_##TYPE##_Vector *v);                                       \
+                                                                              \
+    enum ksm_ErrorCode ksm_##TYPE##_vector_push(                              \
+        struct ksm_##TYPE##_Vector *v, TYPE value);                           \
+                                                                              \
+    enum ksm_ErrorCode ksm_##TYPE##_vector_free(                              \
+        struct ksm_##TYPE##_Vector *v);                                       \
 
-#define ksm_GENERIC_VECTOR_IMPL( TYPE ) \
-    enum ksm_ErrorCode ksm_##TYPE##_vector_init(\
-        struct ksm_##TYPE##_Vector *v\
-    ) { \
-        TYPE *data = ksm_MALLOC(sizeof(TYPE) * ksm_VECTOR_START_CAPACITY); \
-        v->size = 0; \
-        v->capacity = ksm_VECTOR_START_CAPACITY; \
-        v->data = data; \
-        if (data == NULL) { \
-            return ksm_OUT_OF_MEMORY; \
-        } else { \
-            return ksm_NO_ERROR; \
-        } \
-    } \
- \
-    enum ksm_ErrorCode ksm_##TYPE##_vector_push(\
-        struct ksm_##TYPE##_Vector *v, TYPE value\
-    ) { \
-        if (v->size < v->capacity) { \
-            v->data[v->size] = value; \
-            v->size++; \
-            return ksm_NO_ERROR; \
-        } else { \
-            const size_t new_capacity = ksm_VECTOR_GROW_RATE * v->capacity; \
-            v->capacity = new_capacity; \
-            v->data = ksm_REALLOC(v->data, v->capacity * sizeof(TYPE)); \
-            if (v->data != NULL) { \
-                v->data[v->size] = value; \
-                v->size++; \
-                return ksm_NO_ERROR; \
-            } else { \
-                return ksm_OUT_OF_MEMORY; \
-            } \
-        } \
-    } \
- \
-    enum ksm_ErrorCode ksm_##TYPE##_vector_free(\
-        struct ksm_##TYPE##_Vector *v\
-    ) { \
-        ksm_FREE(v->data); \
-        return ksm_NO_ERROR; \
+#define ksm_GENERIC_VECTOR_IMPL( TYPE )                                       \
+    enum ksm_ErrorCode ksm_##TYPE##_vector_init(                              \
+        struct ksm_##TYPE##_Vector *v                                         \
+    ) {                                                                       \
+        TYPE *data = ksm_MALLOC(sizeof(TYPE) * ksm_VECTOR_START_CAPACITY);    \
+        v->size = 0;                                                          \
+        v->capacity = ksm_VECTOR_START_CAPACITY;                              \
+        v->data = data;                                                       \
+        if (data == NULL) {                                                   \
+            return ksm_OUT_OF_MEMORY;                                         \
+        } else {                                                              \
+            return ksm_NO_ERROR;                                              \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+    enum ksm_ErrorCode ksm_##TYPE##_vector_push(                              \
+        struct ksm_##TYPE##_Vector *v, TYPE value                             \
+    ) {                                                                       \
+        if (v->size < v->capacity) {                                          \
+            v->data[v->size] = value;                                         \
+            v->size++;                                                        \
+        } else {                                                              \
+            const size_t new_capacity = ksm_VECTOR_GROW_RATE * v->capacity;   \
+            v->capacity = new_capacity;                                       \
+            v->data = ksm_REALLOC(v->data, v->capacity * sizeof(TYPE));       \
+            if (v->data != NULL) {                                            \
+                v->data[v->size] = value;                                     \
+                v->size++;                                                    \
+            } else {                                                          \
+                return ksm_OUT_OF_MEMORY;                                     \
+            }                                                                 \
+        }                                                                     \
+        return ksm_NO_ERROR;                                                  \
+    }                                                                         \
+                                                                              \
+    enum ksm_ErrorCode ksm_##TYPE##_vector_free(                              \
+        struct ksm_##TYPE##_Vector *v                                         \
+    ) {                                                                       \
+        ksm_FREE(v->data);                                                    \
+        return ksm_NO_ERROR;                                                  \
     }
 
 #endif /* SCIMATH_H */

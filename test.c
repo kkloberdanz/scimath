@@ -22,7 +22,7 @@ double my_func(double x) {
 }
 
 void test_vector() {
-    int i;
+    size_t i;
     struct ksm_int_Vector v;
     struct ksm_double_Vector v2;
     ksm_int_vector_init(&v);
@@ -31,7 +31,7 @@ void test_vector() {
         ksm_int_vector_push(&v, i);
     }
 
-    for (i = 0; i < 100; i++) {
+    for (i = 0; i < v.size; i++) {
         printf("%d, ", v.data[i]);
     }
     puts("");
@@ -42,10 +42,17 @@ void test_vector() {
         ksm_double_vector_push(&v2, sqrt(i));
     }
 
-    for (i = 0; i < 100; i++) {
+    for (i = 0; i < v2.size; i++) {
         printf("%f, ", v2.data[i]);
     }
     puts("");
+
+    for (i = v2.size - 1; i > 0; i--) {
+        fprintf(stderr, "%f, ", v2.data[i]);
+        ksm_double_vector_pop(&v2);
+    }
+    puts("");
+
     ksm_double_vector_free(&v2);
 }
 

@@ -45,6 +45,11 @@ enum ksm_ErrorCode {
     ksm_OUT_OF_MEMORY
 };
 
+enum ksm_MaybeKind {
+    ksm_SOME,
+    ksm_NONE
+};
+
 /******************************************************************************
  * Structs
  *****************************************************************************/
@@ -86,6 +91,13 @@ void ksm_vector_f64_sqrt(double *dst, const double *src, size_t size);
 TYPE ksm_##TYPE##_MAX( TYPE a, TYPE b ) {                                     \
     return (a > b) ? a : b;                                                   \
 }
+
+#define ksm_GENERIC_MAYBE_HEADER( TYPE )                                      \
+    struct ksm_##TYPE##_Maybe {                                               \
+        enum ksm_MaybeKind kind;                                              \
+        TYPE value;                                                           \
+    };
+
 #define ksm_GENERIC_VECTOR_HEADER( TYPE )                                     \
     struct ksm_##TYPE##_Vector {                                              \
         size_t size;                                                          \
@@ -100,6 +112,9 @@ TYPE ksm_##TYPE##_MAX( TYPE a, TYPE b ) {                                     \
         struct ksm_##TYPE##_Vector *v, TYPE value);                           \
                                                                               \
     enum ksm_ErrorCode ksm_##TYPE##_vector_free(                              \
+        struct ksm_##TYPE##_Vector *v);                                       \
+                                                                              \
+    enum ksm_MaybeKind ksm_##TYPE##_vector_pop(                               \
         struct ksm_##TYPE##_Vector *v);                                       \
 
 #define ksm_GENERIC_VECTOR_IMPL( TYPE )                                       \
@@ -142,6 +157,22 @@ TYPE ksm_##TYPE##_MAX( TYPE a, TYPE b ) {                                     \
     ) {                                                                       \
         ksm_FREE(v->data);                                                    \
         return ksm_NO_ERROR;                                                  \
+    }                                                                         \
+                                                                              \
+    enum ksm_MaybeKind ksm_##TYPE##_vector_pop(                               \
+        struct ksm_##TYPE##_Vector *v                                         \
+    ) {                                                                       \
+        if (v->size > 0) {                                                    \
+            const size_t new_capacity = v->capacity / ksm_VECTOR_GROW_RATE;   \
+            v->size--;                                                        \
+            if (v->size < new_capacity) {                                     \
+                v->data = ksm_REALLOC(v->data, new_capacity * sizeof(TYPE));  \
+                v->capacity = new_capacity;                                   \
+            }                                                                 \
+            return ksm_SOME;                                                  \
+        } else {                                                              \
+            return ksm_NONE;                                                  \
+        }                                                                     \
     }
 
 #endif /* SCIMATH_H */

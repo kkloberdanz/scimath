@@ -133,7 +133,8 @@ TYPE ksm_##TYPE##_MAX( TYPE a, TYPE b ) {                                     \
     }                                                                         \
                                                                               \
     enum ksm_ErrorCode ksm_##TYPE##_vector_push(                              \
-        struct ksm_##TYPE##_Vector *v, TYPE value                             \
+        struct ksm_##TYPE##_Vector *v,                                        \
+        TYPE value                                                            \
     ) {                                                                       \
         if (v->size < v->capacity) {                                          \
             v->data[v->size] = value;                                         \

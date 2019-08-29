@@ -23,8 +23,10 @@ double my_func(double x) {
 
 void test_vector() {
     size_t i;
+    char c;
     struct ksm_int_Vector v;
     struct ksm_double_Vector v2;
+    ksm_string str;
     ksm_int_vector_init(&v);
 
     for (i = 0; i < 100; i++) {
@@ -54,6 +56,15 @@ void test_vector() {
     puts("");
 
     ksm_double_vector_free(&v2);
+
+    ksm_char_vector_init(&str);
+
+    for (c = 'a'; c <= 'z'; c++) {
+        ksm_char_vector_push(&str, c);
+    }
+    ksm_char_vector_push(&str, '\0');
+    puts(str.data);
+    ksm_char_vector_free(&str);
 }
 
 int main() {

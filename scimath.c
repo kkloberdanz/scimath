@@ -96,7 +96,6 @@ void kk_arena_free_all(struct Arena *arena) {
     struct MemoryPoolNode *head;
     pool = arena->_pool;
 
-    /*for (pool = arena->_pool; pool != NULL; pool = pool->next) {*/
     while (pool) {
         head = pool->next;
         free(pool->memory);

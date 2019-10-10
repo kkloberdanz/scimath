@@ -8,6 +8,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <sys/time.h>
+#include <pthread.h>
 
 #ifndef ksm_DERIV_H_CONST
 #define ksm_DERIV_H_CONST 0.0001
@@ -53,7 +54,17 @@ enum ksm_MaybeKind {
 /******************************************************************************
  * Structs
  *****************************************************************************/
-/* TODO: structs are to be defined here */
+struct MemoryPoolNode {
+    char *memory;
+    struct MemoryPoolNode *next;
+    size_t index;
+    size_t capacity;
+};
+
+struct Arena {
+    pthread_mutex_t _mtx;
+    struct MemoryPoolNode *_pool;
+};
 
 /******************************************************************************
  * Function prototypes
@@ -62,6 +73,9 @@ double ksm_first_deriv(double (*f)(double), double x);
 double ksm_second_deriv(double (*f)(double), double x);
 void ksm_map(double (*f)(double), double *dst, const double *src, size_t size);
 void ksm_vector_f64_sqrt(double *dst, const double *src, size_t size);
+void kk_arena_init(struct Arena *arena);
+void *kk_arena_alloc(size_t size, struct Arena *arena);
+void kk_arena_free_all(struct Arena *arena);
 
 /******************************************************************************
  * Macros

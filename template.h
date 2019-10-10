@@ -7,7 +7,7 @@
 
 #include "scimath.h"
 
-ksm_GENERIC_VECTOR_HEADER(int)
+ksm_GENERIC_VECTOR_HEADER(size_t)
 ksm_GENERIC_VECTOR_HEADER(double)
 ksm_GENERIC_VECTOR_HEADER(char)
 

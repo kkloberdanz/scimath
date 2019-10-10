@@ -9,7 +9,7 @@
 #include "scimath.h"
 #include "template.h"
 
-#define SIZE 100000000
+/*#define SIZE 100000000*/
 
 ksm_GENERIC_MAX(int)
 
@@ -24,20 +24,20 @@ double my_func(double x) {
 void test_vector() {
     size_t i;
     char c;
-    struct ksm_int_Vector v;
+    struct ksm_size_t_Vector v;
     struct ksm_double_Vector v2;
     ksm_string str;
-    ksm_int_vector_init(&v);
+    ksm_size_t_vector_init(&v);
 
     for (i = 0; i < 100; i++) {
-        ksm_int_vector_push(&v, i);
+        ksm_size_t_vector_push(&v, i);
     }
 
     for (i = 0; i < v.size; i++) {
-        printf("%d, ", v.data[i]);
+        printf("%zu, ", v.data[i]);
     }
     puts("");
-    ksm_int_vector_free(&v);
+    ksm_size_t_vector_free(&v);
 
     ksm_double_vector_init(&v2);
     for (i = 0; i < 100; i++) {
@@ -67,13 +67,25 @@ void test_vector() {
     ksm_char_vector_free(&str);
 }
 
+void test_arena_allocator() {
+    struct Arena arena;
+    size_t i;
+    kk_arena_init(&arena);
+    for (i = 0; i < 100000; i++) {
+        void *ptr = kk_arena_alloc(sizeof(i), &arena);
+        fprintf(stderr, "ptr = %p, i = %zu\n", ptr, i);
+    }
+    kk_arena_free_all(&arena);
+}
+
 int main() {
+    /*
     double x = 5.0;
     double *arr1 = malloc(sizeof(double) * SIZE);
     double *arr2 = malloc(sizeof(double) * SIZE);
     size_t i;
     int maximum;
-    unsigned long runtime;
+    long runtime;
 
     printf("f'(x) = %f\n", ksm_first_deriv(my_func, x));
     printf("f''(x) = %f\n", ksm_second_deriv(my_func, x));
@@ -96,5 +108,7 @@ int main() {
     free(arr2);
 
     test_vector();
+    */
+    test_arena_allocator();
     return 0;
 }

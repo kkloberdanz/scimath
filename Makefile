@@ -4,7 +4,7 @@
 
 CFLAGS=-std=iso9899:1990
 WARN_FLAGS=-Wall -Wextra -Wpedantic -Werror
-CLANG=clang -Wassign-enum -Wenum-conversion
+CLANG=clang -Wassign-enum -Wenum-conversion -Weverything -Wno-missing-prototypes
 GCC=gcc
 SANITIZE=-fsanitize=address -fno-omit-frame-pointer -fsanitize=undefined
 
@@ -19,7 +19,7 @@ debug: test
 valgrind: OPTIM_FLAGS=-Og -ggdb -DDEBUG
 valgrind: test
 
-COMPILER=$(GCC)
+COMPILER=$(CLANG)
 
 CC=$(COMPILER) $(OPTIM_FLAGS) $(CFLAGS) $(WARN_FLAGS)
 

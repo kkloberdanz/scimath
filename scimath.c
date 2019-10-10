@@ -52,7 +52,7 @@ static struct MemoryPoolNode *kk_do_malloc(size_t size) {
     struct MemoryPoolNode *pool = malloc(sizeof(struct MemoryPoolNode));
     pool->memory = memory;
     pool->next = NULL;
-    pool->index = size + 1;
+    pool->index = size;
     pool->capacity = capacity;
     return pool;
 }

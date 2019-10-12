@@ -73,8 +73,8 @@ void test_arena_allocator() {
     size_t total = 0;
     kk_arena_init(&arena);
     for (i = 0; i < 100000000; i++) {
-        /*void *ptr = kk_arena_alloc(sizeof(i), &arena);*/
-        void *ptr = malloc(sizeof(i));
+        void *ptr = kk_arena_alloc(sizeof(i), &arena);
+        /*void *ptr = malloc(sizeof(i));*/
         total += (size_t)ptr;
         /*fprintf(stderr, "ptr = %p, i = %zu\n", ptr, i);*/
     }

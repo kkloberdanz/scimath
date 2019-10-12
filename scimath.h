@@ -5,10 +5,13 @@
 #ifndef SCIMATH_H
 #define SCIMATH_H
 
+#include <stdlib.h>
 #include <math.h>
 #include <stdio.h>
 #include <sys/time.h>
 #include <pthread.h>
+
+#define ksm_UNUSED(X) (void)(X)
 
 #ifndef ksm_DERIV_H_CONST
 #define ksm_DERIV_H_CONST 0.0001
@@ -54,6 +57,11 @@ enum ksm_MaybeKind {
 /******************************************************************************
  * Structs
  *****************************************************************************/
+struct LinkedList {
+    void *node;
+    struct LinkedList *next;
+};
+
 struct MemoryPoolNode {
     char *memory;
     struct MemoryPoolNode *next;
@@ -67,17 +75,6 @@ struct Arena {
     struct MemoryPoolNode *_pool;
     struct MemoryPoolNode *_full_pool;
 };
-
-/******************************************************************************
- * Function prototypes
- *****************************************************************************/
-double ksm_first_deriv(double (*f)(double), double x);
-double ksm_second_deriv(double (*f)(double), double x);
-void ksm_map(double (*f)(double), double *dst, const double *src, size_t size);
-void ksm_vector_f64_sqrt(double *dst, const double *src, size_t size);
-void kk_arena_init(struct Arena *arena);
-void *kk_arena_alloc(size_t size, struct Arena *arena);
-void kk_arena_free_all(struct Arena *arena);
 
 /******************************************************************************
  * Macros
@@ -191,5 +188,24 @@ TYPE ksm_##TYPE##_MAX( TYPE a, TYPE b ) {                                     \
             return ksm_NONE;                                                  \
         }                                                                     \
     }
+
+typedef void * void_ptr;
+ksm_GENERIC_VECTOR_HEADER(void_ptr)
+typedef struct ksm_void_ptr_Vector MemoryVec;
+
+/******************************************************************************
+ * Function prototypes
+ *****************************************************************************/
+double ksm_first_deriv(double (*f)(double), double x);
+double ksm_second_deriv(double (*f)(double), double x);
+void ksm_map(double (*f)(double), double *dst, const double *src, size_t size);
+void ksm_vector_f64_sqrt(double *dst, const double *src, size_t size);
+void kk_arena_init(struct Arena *arena);
+void *kk_arena_alloc(size_t size, struct Arena *arena);
+void kk_arena_free_all(struct Arena *arena);
+void *kk_track_malloc(size_t size, struct ksm_void_ptr_Vector *vec);
+void kk_track_free(struct ksm_void_ptr_Vector *vec);
+
+#define memory_vec_init(X) ksm_void_ptr_vector_init(X)
 
 #endif /* SCIMATH_H */

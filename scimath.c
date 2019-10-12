@@ -12,6 +12,8 @@
 #define MAX(A, B) ((A) > (B)) ? (A) : (B)
 #define PAGE_SIZE 4096
 
+ksm_GENERIC_VECTOR_IMPL(void_ptr)
+
 double ksm_first_deriv(double (*f)(double), double x) {
     return (f(x + ksm_DERIV_H_CONST) - f(x - ksm_DERIV_H_CONST)) /
            (2 * ksm_DERIV_H_CONST);
@@ -76,7 +78,7 @@ start_alloc:
         for (pool = arena->_pool; pool != NULL; pool = pool->next) {
             size_t bytes_left = pool->capacity - pool->index;
 
-            if (bytes_left == 0) {
+            if (bytes_left < 10) {
                 /* remove full pool from active pools list */
                 if (prev == NULL) {
                     arena->_pool = pool->next;
@@ -126,4 +128,20 @@ static void free_pools(struct MemoryPoolNode *pool) {
 void kk_arena_free_all(struct Arena *arena) {
     free_pools(arena->_pool);
     free_pools(arena->_full_pool);
+}
+
+void *kk_track_malloc(size_t size, struct ksm_void_ptr_Vector *vec) {
+    void *ptr = malloc(size);
+    if (ptr != NULL) {
+        ksm_void_ptr_vector_push(vec, ptr);
+    }
+    return ptr;
+}
+
+void kk_track_free(struct ksm_void_ptr_Vector *vec) {
+    size_t i;
+    for (i = 0; i < vec->size; i++) {
+        free(vec->data[i]);
+    }
+    ksm_void_ptr_vector_free(vec);
 }

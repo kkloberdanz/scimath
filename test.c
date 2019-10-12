@@ -71,15 +71,37 @@ void test_arena_allocator() {
     struct Arena arena;
     size_t i;
     size_t total = 0;
+    srand(10);
     kk_arena_init(&arena);
-    for (i = 0; i < 100000000; i++) {
-        void *ptr = kk_arena_alloc(sizeof(i), &arena);
-        /*void *ptr = malloc(sizeof(i));*/
+    for (i = 0; i < 100000; i++) {
+        size_t bytes = rand() % 1024;
+        void *ptr = kk_arena_alloc(bytes, &arena);
+        /*void *ptr = malloc(bytes);*/
+
+        /*fprintf(stderr, "allocating %zu bytes\n", bytes);*/
         total += (size_t)ptr;
         /*fprintf(stderr, "ptr = %p, i = %zu\n", ptr, i);*/
     }
     fprintf(stderr, "dummy: %zu\n", total);
     kk_arena_free_all(&arena);
+}
+
+void test_track_malloc() {
+    int i;
+    size_t total = 0;
+    MemoryVec memory;
+    memory_vec_init(&memory);
+    srand(10);
+    for (i = 0; i < 100000; i++) {
+        size_t bytes = rand() % 1024;
+        void *ptr = kk_track_malloc(bytes, &memory);
+
+        /*fprintf(stderr, "allocating %zu bytes\n", bytes);*/
+        total += (size_t)ptr;
+        /*fprintf(stderr, "ptr = %p, i = %zu\n", ptr, i);*/
+    }
+    fprintf(stderr, "dummy: %zu\n", total);
+    kk_track_free(&memory);
 }
 
 int main() {
@@ -112,7 +134,8 @@ int main() {
     free(arr2);
 
     test_vector();
-    */
     test_arena_allocator();
+    */
+    test_track_malloc();
     return 0;
 }

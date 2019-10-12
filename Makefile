@@ -11,13 +11,13 @@ SANITIZE=-fsanitize=address -fno-omit-frame-pointer -fsanitize=undefined
 OBJS=scimath.so
 
 release: OPTIM_FLAGS=-Ofast -g -march=native -mtune=native
-release: run
+release: test
 
 debug: OPTIM_FLAGS=-O0 -ggdb -DDEBUG $(SANITIZE)
-debug: run
+debug: test
 
 valgrind: OPTIM_FLAGS=-O0 -ggdb -DDEBUG
-valgrind: run
+valgrind: test
 
 COMPILER=$(CLANG)
 

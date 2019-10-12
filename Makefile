@@ -11,13 +11,13 @@ SANITIZE=-fsanitize=address -fno-omit-frame-pointer -fsanitize=undefined
 OBJS=scimath.so
 
 release: OPTIM_FLAGS=-Ofast -g -march=native -mtune=native
-release: test
+release: run
 
-debug: OPTIM_FLAGS=-Og -ggdb -DDEBUG $(SANITIZE)
-debug: test
+debug: OPTIM_FLAGS=-O0 -ggdb -DDEBUG $(SANITIZE)
+debug: run
 
-valgrind: OPTIM_FLAGS=-Og -ggdb -DDEBUG
-valgrind: test
+valgrind: OPTIM_FLAGS=-O0 -ggdb -DDEBUG
+valgrind: run
 
 COMPILER=$(CLANG)
 
@@ -26,9 +26,11 @@ CC=$(COMPILER) $(OPTIM_FLAGS) $(CFLAGS) $(WARN_FLAGS)
 loc: clean
 	find . -path '*/.*' -prune -o -type f -exec sloccount {} \+
 
+run: test
+	./test
+
 test: libscimath.so template
 	$(CC) -L . test.c template.o -o test -lscimath -lm -fopenmp
-	./test
 
 template: template.h template.c
 	$(CC) -c template.c

@@ -59,11 +59,13 @@ struct MemoryPoolNode {
     struct MemoryPoolNode *next;
     size_t index;
     size_t capacity;
+    size_t id;
 };
 
 struct Arena {
     pthread_mutex_t _mtx;
     struct MemoryPoolNode *_pool;
+    struct MemoryPoolNode *_full_pool;
 };
 
 /******************************************************************************

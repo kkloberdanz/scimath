@@ -59,9 +59,11 @@ static struct MemoryPoolNode *kk_do_malloc(size_t size) {
 
 void kk_arena_init(struct Arena *arena) {
     arena->_pool = NULL;
+    arena->_full_pool = NULL;
 }
 
 void *kk_arena_alloc(size_t size, struct Arena *arena) {
+start_alloc:
     if (arena->_pool == NULL) {
         /* first allocation */
         struct MemoryPoolNode *pool = kk_do_malloc(size);
@@ -70,16 +72,36 @@ void *kk_arena_alloc(size_t size, struct Arena *arena) {
     } else {
         struct MemoryPoolNode *pool;
         struct MemoryPoolNode *prev = NULL;
-        size_t i = 0;
+        struct MemoryPoolNode *full_pool = NULL;
         for (pool = arena->_pool; pool != NULL; pool = pool->next) {
             size_t bytes_left = pool->capacity - pool->index;
-            if (size <= bytes_left) {
+
+            if (bytes_left == 0) {
+                /* remove full pool from active pools list */
+                if (prev == NULL) {
+                    arena->_pool = pool->next;
+                } else {
+                    prev->next = pool->next;
+                }
+
+                /* move full pool to the _full_pool list */
+                full_pool = arena->_full_pool;
+                if (full_pool == NULL) {
+                    arena->_full_pool = pool;
+                } else {
+                    arena->_full_pool = pool;
+                    pool->next = full_pool;
+                }
+
+                goto start_alloc;
+
+            } else if (size <= bytes_left) {
                 /* has available memory in existing pool */
                 size_t index = pool->index;
                 pool->index += size;
                 return pool->memory + index;
             }
-            i++;
+
             if (pool) {
                 prev = pool;
             }
@@ -91,15 +113,17 @@ void *kk_arena_alloc(size_t size, struct Arena *arena) {
     }
 }
 
-void kk_arena_free_all(struct Arena *arena) {
-    struct MemoryPoolNode *pool;
+static void free_pools(struct MemoryPoolNode *pool) {
     struct MemoryPoolNode *head;
-    pool = arena->_pool;
-
     while (pool) {
         head = pool->next;
         free(pool->memory);
         free(pool);
         pool = head;
     }
+}
+
+void kk_arena_free_all(struct Arena *arena) {
+    free_pools(arena->_pool);
+    free_pools(arena->_full_pool);
 }

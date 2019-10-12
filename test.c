@@ -70,11 +70,15 @@ void test_vector() {
 void test_arena_allocator() {
     struct Arena arena;
     size_t i;
+    size_t total = 0;
     kk_arena_init(&arena);
-    for (i = 0; i < 100000; i++) {
-        void *ptr = kk_arena_alloc(sizeof(i), &arena);
-        fprintf(stderr, "ptr = %p, i = %zu\n", ptr, i);
+    for (i = 0; i < 100000000; i++) {
+        /*void *ptr = kk_arena_alloc(sizeof(i), &arena);*/
+        void *ptr = malloc(sizeof(i));
+        total += (size_t)ptr;
+        /*fprintf(stderr, "ptr = %p, i = %zu\n", ptr, i);*/
     }
+    fprintf(stderr, "dummy: %zu\n", total);
     kk_arena_free_all(&arena);
 }
 

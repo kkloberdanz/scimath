@@ -1,5 +1,8 @@
 test
 *.o
+*.a
 *.so
 *.swp
 *.swo
+a.out
+core

@@ -1,17 +1,19 @@
 #include "simd.h"
 
+#define SIZE 1001
+
 int main() {
-    double SIMD_ALIGN res[100];
-    double SIMD_ALIGN a[100];
+    float SIMD_ALIGN res[SIZE];
+    float SIMD_ALIGN a[SIZE];
     int i;
 
-    for (i = 0; i < 100; i++) {
-        a[i] = (double)(i);
+    for (i = 0; i < SIZE; i++) {
+        a[i] = (float)(i);
     }
 
-    ksm_sqrt_double_array(res, a, 100);
+    ksm_sqrt_float_array(res, a, SIZE);
 
-    for (i = 0; i < 100; i++) {
+    for (i = 0; i < SIZE; i++) {
         printf("sqrt(%f) = %f\n", a[i], res[i]);
     }
     puts("");

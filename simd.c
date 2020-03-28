@@ -5,18 +5,52 @@
 
 #include "simd.h"
 
+void ksm_sqrt_float_array(
+    float *result,
+    const float *a,
+    size_t size
+) {
+    size_t i = 0;
+
+#ifdef __AVX512F__
+    /* AVX-512 */
+    for(; i < (size & ~0x7); i += 16) {
+        const __m512 kA8 = _mm512_load_ps(&a[i]);
+        const __m512 kRes = _mm512_sqrt_ps(kA8);
+        _mm512_stream_ps(&result[i], kRes);
+    }
+#endif
+
+#ifdef __AVX__
+    /* AVX loop */
+    for (; i < (size & ~0x3); i += 8) {
+        const __m256 kA4 = _mm256_load_ps(&a[i]);
+        const __m256 kRes = _mm256_sqrt_ps(kA4);
+        _mm256_stream_ps(&result[i], kRes);
+    }
+#endif
+
+#ifdef __SSE2__
+    /* SSE2 loop */
+    for (; i < (size & ~0x1); i += 4) {
+        const __m128 kA2 = _mm_load_ps(&a[i]);
+        const __m128 kRes = _mm_sqrt_ps(kA2);
+        _mm_stream_ps(&result[i], kRes);
+    }
+#endif
+
+    /* Serial loop */
+    for(; i < size; i++) {
+        result[i] = sqrt(a[i]);
+    }
+}
+
 void ksm_sqrt_double_array(
     double *result,
     const double *a,
     size_t size
 ) {
     size_t i = 0;
-
-    /* 
-     * Note we are doing as many blocks of 8 as we can.
-     * If the size is not divisible by 8 then we will have some left over
-     * that will then be performed serially.
-     */
 
 #ifdef __AVX512F__
     /* AVX-512 */
@@ -59,12 +93,6 @@ void ksm_div_double_array(
 ) {
     size_t i = 0;
 
-    /* 
-     * Note we are doing as many blocks of 8 as we can.
-     * If the size is not divisible by 8 then we will have some left over
-     * that will then be performed serially.
-     */
-
 #ifdef __AVX512F__
     /* AVX-512 */
     for(; i < (size & ~0x7); i += 8) {
@@ -99,7 +127,7 @@ void ksm_div_double_array(
     for(; i < size; i++) {
         result[i] = a[i] + b[i];
     }
-} 
+}
 
 void ksm_add_double_array(
     double *result,
@@ -108,12 +136,6 @@ void ksm_add_double_array(
     size_t size
 ) {
     size_t i = 0;
-
-    /* 
-     * Note we are doing as many blocks of 8 as we can.
-     * If the size is not divisible by 8 then we will have some left over
-     * that will then be performed serially.
-     */
 
 #ifdef __AVX512F__
     /* AVX-512 */

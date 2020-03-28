@@ -29,10 +29,8 @@ void ksm_div_double_array(
     size_t size
 );
 
-void ksm_sqrt_double_array(
-    double *result,
-    const double *a,
-    size_t size
-);
+void ksm_sqrt_double_array(double *result, const double *a, size_t size);
+
+void ksm_sqrt_float_array(float *result, const float *a, size_t size);
 
 #endif /* SIMD_H */

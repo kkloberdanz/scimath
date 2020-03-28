@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <sys/time.h>
 #include <pthread.h>
 
@@ -23,6 +24,10 @@
 
 #ifndef ksm_VECTOR_GROW_RATE
 #define ksm_VECTOR_GROW_RATE 2
+#endif
+
+#ifndef kk_BTREE_SIZE
+#define kk_BTREE_SIZE 2
 #endif
 
 /******************************************************************************
@@ -74,6 +79,23 @@ struct Arena {
     pthread_mutex_t _mtx;
     struct MemoryPoolNode *_pool;
     struct MemoryPoolNode *_full_pool;
+};
+
+struct BTreeNode {
+    char *key;
+    double value;
+};
+
+struct BTreeBlock {
+    struct BTreeNode data[kk_BTREE_SIZE];
+    struct BTreeNode *ptrs[kk_BTREE_SIZE + 1];
+    size_t index;
+};
+
+struct BTree {
+    int (*compare_keys)(void *, void *);
+    size_t size;
+    struct BTreeBlock *block;
 };
 
 /******************************************************************************

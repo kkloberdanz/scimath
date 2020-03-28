@@ -8,6 +8,7 @@
 
 #include "scimath.h"
 #include "template.h"
+#include "simd.h"
 
 /*#define SIZE 100000000*/
 
@@ -135,7 +136,6 @@ int main() {
 
     test_vector();
     test_arena_allocator();
-    */
     test_track_malloc();
-    return 0;
+    */
 }

@@ -14,7 +14,7 @@ void ksm_sqrt_float_array(
 
 #ifdef __AVX512F__
     /* AVX-512 */
-    for(; i < (size & ~0x7); i += 16) {
+    for(; i < (size & ~0xf); i += 16) {
         const __m512 kA8 = _mm512_load_ps(&a[i]);
         const __m512 kRes = _mm512_sqrt_ps(kA8);
         _mm512_stream_ps(&result[i], kRes);
@@ -23,7 +23,7 @@ void ksm_sqrt_float_array(
 
 #ifdef __AVX__
     /* AVX loop */
-    for (; i < (size & ~0x3); i += 8) {
+    for (; i < (size & ~0x7); i += 8) {
         const __m256 kA4 = _mm256_load_ps(&a[i]);
         const __m256 kRes = _mm256_sqrt_ps(kA4);
         _mm256_stream_ps(&result[i], kRes);
@@ -32,7 +32,7 @@ void ksm_sqrt_float_array(
 
 #ifdef __SSE2__
     /* SSE2 loop */
-    for (; i < (size & ~0x1); i += 4) {
+    for (; i < (size & ~0x3); i += 4) {
         const __m128 kA2 = _mm_load_ps(&a[i]);
         const __m128 kRes = _mm_sqrt_ps(kA2);
         _mm_stream_ps(&result[i], kRes);
